@@ -3,13 +3,19 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to python-redict's documentation!
-=========================================
+python-redict
+=============
+
+A tool to rewrite dictionary & json key mappings.
+
 
 Contents:
 
 .. toctree::
    :maxdepth: 2
+
+   installation
+   usage
 
 
 
