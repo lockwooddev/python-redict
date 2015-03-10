@@ -1,0 +1,11 @@
+.DS_Store
+build
+dist
+MANIFEST
+*.pyc
+*.egg-info
+*.egg
+docs/_build/
+.coverage
+env/
+.cache
