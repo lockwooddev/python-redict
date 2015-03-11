@@ -139,40 +139,36 @@ class BaseRemapper(object):
             unpacked_keys = key.split(".")
             remapped_keys = self.remap_keys(unpacked_keys)
 
-            for i, unpacked_key in enumerate(unpacked_keys):
-                # Last key will be set
-                if i == (len(unpacked_keys) - 1):
+            # If head of the dict
+            if len(remapped_keys) == 1:
+                dict_ref = remapped_dict
 
-                    # If head of the dict
-                    if len(remapped_keys) == 1:
-                        dict_ref = remapped_dict
+            # If tail of the dict, generate key to be walked from parent keys
+            # except last key. The key will be used to recursively walk trough
+            # the dict till the end is reached and then returned as reference to
+            # the new remapped_dict dict.
+            else:
+                walker_key = '.'.join(remapped_keys[:-1])
+                dict_ref = self.walk_into(remapped_dict, walker_key)
 
-                    # If tail of the dict, generate key to be walked from parent keys
-                    # except last key. The key will be used to recursively walk trough
-                    # the dict till the end is reached and then returned as reference to
-                    # the new remapped_dict dict.
-                    else:
-                        walker_key = '.'.join(remapped_keys[:-1])
-                        dict_ref = self.walk_into(remapped_dict, walker_key)
+            # The renamed new key to be set instead of the original key
+            new_key = remapped_keys[-1]
 
-                    # The renamed new key to be set instead of the original key
-                    new_key = remapped_keys[-1]
+            # If type is list or dict.
+            if _type in container_types:
 
-                    # If type is list or dict.
-                    if _type in container_types:
+                # If integer key as string, append container type to list
+                if self.is_int(new_key):
+                    dict_ref.append(copy.deepcopy(container_types[_type]))
+                # If string key, set container type to key
+                else:
+                    dict_ref[new_key] = copy.deepcopy(container_types[_type])
 
-                        # If integer key as string, append container type to list
-                        if self.is_int(new_key):
-                            dict_ref.append(copy.deepcopy(container_types[_type]))
-                        # If string key, set container type to key
-                        else:
-                            dict_ref[new_key] = copy.deepcopy(container_types[_type])
-
-                    else:
-                        if self.is_int(new_key):
-                            # If integer key as string, append value to list
-                            dict_ref.append(self.walk_into(self.data, key))
-                        else:
-                            # If string key, set key and value
-                            dict_ref[new_key] = self.walk_into(self.data, key)
+            else:
+                if self.is_int(new_key):
+                    # If integer key as string, append value to list
+                    dict_ref.append(self.walk_into(self.data, key))
+                else:
+                    # If string key, set key and value
+                    dict_ref[new_key] = self.walk_into(self.data, key)
         return remapped_dict
