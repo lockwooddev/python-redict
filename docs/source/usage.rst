@@ -65,8 +65,8 @@ In case you're working with big json files, it can help to reduce the size of yo
     }
 
     json_string = (
-        '{'message': 'hello world', 'user': 1, '
-        'permissions': [{'role': 1, }, {'role': 2, }, {'role': 3, }]}'
+        '{"message": "hello world", "user": 1, '
+        '"permissions": [{"role": 1, }, {"role": 2, }, {"role": 3, }]}'
     )
 
     remapped = redict.JsonRemapper(json_string, keymap=keymap)()
@@ -74,7 +74,7 @@ In case you're working with big json files, it can help to reduce the size of yo
 Results in:
 ::
 
-    '{'m': 'hello world', 'u': 1, 'p': [{'r': 1, }, {'r': 2, }, {'r': 3, },]}'
+    '{"m": "hello world", "u": 1, "p": [{"r": 1, }, {"r": 2, }, {"r": 3, },]}'
 
 
 You can also minify the result:
@@ -85,4 +85,4 @@ You can also minify the result:
 
 ::
 
-    '{'m':'helloworld','u':1,'p':[{'r':1,},{'r':2,},{'r':3,},]}'
+    '{"m":"helloworld","u":1,"p":[{"r":1,},{"r":2,},{"r":3,},]}'
