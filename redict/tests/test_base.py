@@ -6,29 +6,20 @@ class TestBaseMapper:
     def setup(self):
         self.data = {
             'aaa': {
-                'bbb': [
-                    {
-                        'ccc': [
-                            {
-                                'ddd': 123,
-                                'eee': {},
-                                'fff': 1.0,
-                                'ggg': [],
-                            },
-                            {},
-                            {
-                                'ddd': 456,
-                                'eee': {},
-                                'fff': 2.0,
-                                'ggg': [],
-                            },
-                            [],
-                        ],
-                    },
+                'aaa': [
+                    {'aaa': 1, 'bbb': [5, 6], 'ccc': 8, 'ddd': {'eee': None}, 'fff': True},
+                    [],
+                    {'aaa': 1, 'bbb': [], 'ccc': 8, 'ddd': {}, 'fff': True},
+                    {},
                 ]
             },
-            'hhh': None,
-            'iii': 'name'
+            'bbb': 3,
+            'ccc': [1],
+            'ddd': {
+                'eee': {
+                    'fff': False
+                }
+            }
         }
 
     def test_init_without_keymap(self):
@@ -41,6 +32,70 @@ class TestBaseMapper:
         assert instance.data == {'a': 1}
         assert instance.kwargs == {'keymap': {}}
 
+    def test_call_instance_without_keymap(self):
+        instance = BaseRemapper(self.data)
+        assert self.data == instance()
+
+    def test_keymap(self):
+        data = {
+            'aaa': {
+                'aaa': [
+                    {'aaa': 1, 'bbb': [5, 6], 'ccc': 8, 'ddd': {'eee': None}, 'fff': True},
+                    [],
+                    {'aaa': 1, 'bbb': [], 'ccc': 8, 'ddd': {}, 'fff': True},
+                    {},
+                ]
+            },
+            'bbb': 3,
+            'ccc': [1],
+            'ddd': {
+                'eee': {
+                    'fff': False
+                }
+            }
+        }
+
+        keymap = {'aaa': 'a'}
+
+        instance = BaseRemapper(data, keymap=keymap)
+        keys = instance.build_keys()
+
+        expected_keys = {
+            'aaa': 1,
+            'aaa.aaa': 0,
+            'aaa.aaa.0': 1,
+            'aaa.aaa.0.fff': 2,
+            'aaa.aaa.0.aaa': 2,
+            'aaa.aaa.0.bbb': 0,
+            'aaa.aaa.0.bbb.0': 2,
+            'aaa.aaa.0.bbb.1': 2,
+            'aaa.aaa.0.ccc': 2,
+            'aaa.aaa.0.ddd': 1,
+            'aaa.aaa.0.ddd.eee': 2,
+
+            'aaa.aaa.1': 0,
+
+            'aaa.aaa.2': 1,
+            'aaa.aaa.2.fff': 2,
+            'aaa.aaa.2.aaa': 2,
+            'aaa.aaa.2.bbb': 0,
+            'aaa.aaa.2.ccc': 2,
+            'aaa.aaa.2.ddd': 1,
+
+            'aaa.aaa.3': 1,
+
+            'bbb': 2,
+
+            'ccc': 0,
+            'ccc.0': 2,
+
+            'ddd': 1,
+            'ddd.eee': 1,
+            'ddd.eee.fff': 2,
+        }
+
+        assert expected_keys == keys
+
     def test_call_instance_with_keymap(self):
         keymap = {
             'aaa': 'a',
@@ -49,9 +104,6 @@ class TestBaseMapper:
             'ddd': 'd',
             'eee': 'e',
             'fff': 'f',
-            'ggg': 'g',
-            'hhh': 'h',
-            'iii': 'i',
         }
 
         instance = BaseRemapper(self.data, keymap=keymap)
@@ -59,62 +111,18 @@ class TestBaseMapper:
 
         assert result == {
             'a': {
-                'b': [
-                    {
-                        'c': [
-                            {
-                                'e': {},
-                                'd': 123,
-                                'g': [],
-                                'f': 1.0
-                            },
-                            {},
-                            {
-                                'e': {},
-                                'd': 456,
-                                'g': [],
-                                'f': 2.0
-                            },
-                            []
-                        ]
-                    }
-                ]
-            },
-            'h': None,
-            'i': 'name'
-        }
-
-    def test_call_instance_with_identical_keys(self):
-
-        data = {
-            'aaa': {
-                'aaa': [
-                    {
-                        'aaa': [
-                            1, 2, 3, 4, {'aaa': 1, 'bbb': {'aaa': 1.0}}, 5, [1, 2], 6
-                        ],
-                    },
-                ]
-            },
-        }
-
-        keymap = {'aaa': 'a'}
-
-        instance = BaseRemapper(data, keymap=keymap)
-        result = instance()
-
-        assert result == {
-            'a': {
                 'a': [
-                    {
-                        'a': [
-                            1, 2, 3, 4, {'a': 1, 'bbb': {'a': 1.0}}, 5, [1, 2], 6
-                        ],
-                    },
+                    {'a': 1, 'c': 8, 'b': [5, 6], 'd': {'e': None}, 'f': True},
+                    [],
+                    {'a': 1, 'c': 8, 'b': [], 'd': {}, 'f': True},
+                    {}
                 ]
             },
+            'c': [1],
+            'b': 3,
+            'd': {
+                'e': {
+                    'f': False
+                }
+            }
         }
-
-    def test_call_instance_without_keymap(self):
-        instance = BaseRemapper(self.data)
-        assert self.data == instance()

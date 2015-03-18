@@ -70,8 +70,9 @@ class BaseRemapper(object):
                     walk_keys(obj, list_index)
 
             elif isinstance(data, dict):
+                key_count = 0
+                key_len = len(data)
                 for key, value in data.iteritems():
-
                     _type_id = self.type_id(value)
                     previous_lookup = lookup
 
@@ -82,10 +83,16 @@ class BaseRemapper(object):
                         if is_empty:
                             lookup = previous_lookup
                         else:
-                            lookup = ''
+                            # if not reached end of keys
+                            if key_count < (key_len - 1):
+                                lookup = previous_lookup
+                            else:
+                                lookup = ''
 
                     else:
                         keys[self.build_lookup(lookup, key)] = _type_id
+                    key_count += 1
+                key_count = 0
 
         # Run inner method
         walk_keys(self.data)
