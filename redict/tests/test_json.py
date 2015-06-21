@@ -58,7 +58,7 @@ class TestJsonRemapper:
             '{"a": {"b": [{"c": [{"e": {}, "d": 123, "g": [], "f": 1.0}, {}, '
             '{"e": {}, "d": 456, "g": [], "f": 2.0}, []]}]}, "h": null, "i": "name"}'
         )
-        assert result == expected
+        assert json.loads(expected) == json.loads(result)
 
     def test_remap_json_with_minifier(self):
         instance = JsonRemapper(self.json_data, keymap=self.keymap, minify=True)
@@ -67,4 +67,4 @@ class TestJsonRemapper:
             '{"a":{"b":[{"c":[{"e":{},"d":123,"g":[],"f":1.0},{},'
             '{"e":{},"d":456,"g":[],"f":2.0},[]]}]},"h":null,"i":"name"}'
         )
-        assert result == expected
+        assert json.loads(expected) == json.loads(result)

@@ -72,7 +72,7 @@ class BaseRemapper(object):
             elif isinstance(data, dict):
                 key_count = 0
                 key_len = len(data)
-                for key, value in data.iteritems():
+                for key, value in data.items():
                     _type_id = self.type_id(value)
                     previous_lookup = lookup
 
@@ -142,7 +142,7 @@ class BaseRemapper(object):
         container_types = {0: [], 1: {}}
         remapped_dict = {}
 
-        for key, _type in keys.iteritems():
+        for key, _type in keys.items():
             unpacked_keys = key.split(".")
             remapped_keys = self.remap_keys(unpacked_keys)
 
